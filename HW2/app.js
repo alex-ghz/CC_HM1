@@ -7,6 +7,23 @@ const fs = require('fs');
 const ejs = require('ejs');
 const request = require('request');
 const chalk = require('chalk');
+const mongoose = require('mongoose');
+const url = require('url');
+
+// Database Setup
+mongoose.connect('mongodb://localhost:27017/tests',
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    });
+
+const movieModel = require('./models/movieModel');
+const categoryModel = require('./models/categoryModel');
+
+const models = {
+    movieModel: movieModel(mongoose),
+    categoryModel: categoryModel(mongoose)
+};
 
 
 // Settings
@@ -23,9 +40,9 @@ const resourceController = require('./controllers/resourceController');
 // Server
 const server = http.createServer((req, res) => {
 
-    resourceController(req, res, fs);
+    //resourceController(req, res, fs);
     loggerController(req, res, chalk);
-    indexController(req, res, fs, ejs, request);
+    indexController(req, res, fs, ejs, request, models, url);
 });
 
 server.listen(port, hostname, () => {
